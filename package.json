@@ -1,0 +1,12 @@
+{
+  "name": "sphero-fb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Vegard Veiset",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^2.2.9",
+    "sphero": "^0.3.0"
+  }
+}
