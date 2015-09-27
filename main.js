@@ -1,7 +1,8 @@
 import sphero from 'sphero';
-import firebase from 'firebase';
+import { firebase } from 'devices-core';
+
+const fb = new firebase('sphero', 'gadgets');
 const orb = sphero('/dev/tty.Sphero-RWB-AMP-SPP');
-const fb = new firebase('https://fiery-inferno-7517.firebaseio.com/gadgets/sphero/move');
 
 const DURATION = 8000;
 const DIRECTION = {
@@ -15,14 +16,22 @@ const roll = (direction) => orb.roll(100, direction);
 
 orb.connect(() => {
  	console.log('Connected!');
+ 	orb.streamGyroscope();
+ 	console.log('Streaming gyro');
 
-	fb.on('value', (snapshot) => {
-		const move = snapshot.val();
-
+	fb.on('move', '/gadgets/sphero/', (move) => {
 		if (DIRECTION.hasOwnProperty(move)) {
 			stop();
 			roll(DIRECTION[move]);
 			setTimeout(stop, DURATION);	
 		}
+	});
+
+	orb.on("gyroscope", (data) => {
+		fb.send('gyro', {
+			x: data.xGyro.value[0],
+			y: data.yGyro.value[0],
+			z: data.zGyro.value[0]
+		});
 	});
 });

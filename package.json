@@ -6,7 +6,7 @@
   "author": "Vegard Veiset",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^2.2.9",
+    "devices-core": "bekk-iot/devices-core",
     "sphero": "^0.3.0"
   }
 }
