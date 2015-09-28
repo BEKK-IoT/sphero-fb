@@ -18,13 +18,29 @@ orb.connect(() => {
  	console.log('Connected!');
  	orb.streamGyroscope();
  	console.log('Streaming gyro');
+ 	orb.streamAccelerometer();
+ 	console.log('Streaming accelerometer');
 
 	fb.on('move', '/gadgets/sphero/', (move) => {
+		fb.send('move', 'none');
 		if (DIRECTION.hasOwnProperty(move)) {
 			stop();
 			roll(DIRECTION[move]);
 			setTimeout(stop, DURATION);	
 		}
+	});
+
+	fb.on('color', '/gadgets/sphero/', (color) => {
+		orb.color(color);
+	});
+
+	orb.on("accelerometer", function(data) {
+		console.log(data);
+		fb.send('accel', {
+			x: data.xAccel.value[0],
+			y: data.yAccel.value[0],
+			z: data.zAccel.value[0]
+		});
 	});
 
 	orb.on("gyroscope", (data) => {
@@ -34,4 +50,9 @@ orb.connect(() => {
 			z: data.zGyro.value[0]
 		});
 	});
+});
+
+process.on('SIGINT', () => {
+	process.stdin.pause();
+	process.exit();
 });
